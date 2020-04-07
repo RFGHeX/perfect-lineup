@@ -2,7 +2,7 @@ function validateLineup(lineup) {
   const validSalarys = calcTotalSalary(lineup)
   const validTeams = getTeamCount(lineup)
   const validGames = getGameCount(lineup)
-  const validPosition = getPositionCount(lineup)
+  const validPosition = lineup.length === 9 ? getPositionCount(lineup) : false
 
   return validSalarys && validTeams && validGames && validPosition
 }
@@ -12,17 +12,17 @@ function getTeamCount(lineup) {
     teams[player.teamId] = teams[player.teamId] ? teams[player.teamId] + 1 : 1
 
     return teams
-  })
+  }, {})
 
   return !Object.values(playersPerTeam).some((teamLimit) => { return teamLimit > 2 })
 }
 
 function getGameCount(lineup) {
   const playersPerGame = lineup.reduce((games, player) => {
-    games[player.gameId] = games[player.gameId] ? 1 : games[player.gameId] + 1
+    games[player.gameId] = games[player.gameId] ? games[player.gameId] + 1 : 1
 
     return games
-  })
+  }, {})
 
   return !Object.values(playersPerGame).some((gameLimit) => { return gameLimit > 3 })
 }
@@ -30,10 +30,10 @@ function getGameCount(lineup) {
 function getPositionCount(lineup) {
   const singlePositions = ['P', 'C', '1B', '2B', '3B', 'SS']
   const allPositions = lineup.reduce((position, player) => {
-    position[player.position] = position[player.position] ? 1 : position[player.position] + 1
+    position[player.position] = position[player.position] ? position[player.position] + 1 : 1
 
     return position
-  })
+  }, {})
 
   for (let position in allPositions) {
     if (position === 'OF' && allPositions[position] !== 3) {
